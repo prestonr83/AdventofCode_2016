@@ -18,12 +18,16 @@ blocks = {'x': 0,
           'z': 0 
          }
 
+location_history = []
+
+twice_visted = []
+
 direction = {0 : ('x', 1),
              1 : ('y', 1),
              2 : ('x', -1),
              3 : ('y', -1)}
 
-
+location_history.append([blocks['x'],blocks['y']])
 for i in puzzle_input:
     if i[0] == "R":
         if blocks['z'] == 3:
@@ -36,9 +40,16 @@ for i in puzzle_input:
         else:
             blocks['z'] += -1
     for x in range(int(i[1:])):
-        print(blocks)
         blocks[direction[blocks['z']][0]] += direction[blocks['z']][1]
+        if [blocks['x'],blocks['y']] in location_history:
+            if not twice_visted:
+                twice_visted.append(blocks['x'])
+                twice_visted.append(blocks['y'])
+        location_history.append([blocks['x'],blocks['y']])
+
 
 distance = abs(blocks['x']) + abs(blocks['y'])
+real_distance = abs(twice_visted[0]) + abs(twice_visted[1])
 
 print("Easter Bunny HQ is {} blocks away".format(distance))
+print("The real distance was {} blocks away".format(real_distance))
