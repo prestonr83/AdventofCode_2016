@@ -27,19 +27,28 @@ def parse_input():
             lines += 1
     return tri_dict
 
-def col_check(triangles, item, valid_items=0, index=0):
-    try:
-        triangles[index]
-    except KeyError:
-        return valid_items
-    numbers = []
-    for i in range(3):
-        numbers.append(triangles[index][item])
-        index += 1
-    valid = valid_tri(numbers)
-    if valid:
-        valid_items += 1
-    return col_check(triangles, item, valid_items=valid_items, index=index)
+def col_check(triangles):
+    index = 0
+    item = 0
+    valid_items = 0
+    while True:
+        numbers = []
+        for i in range(3):
+            numbers.append(triangles[index][item])
+            print(index)
+            index += 1
+        valid = valid_tri(numbers)
+        if valid:
+            valid_items += 1
+        item += 1
+        index += -3
+        if item == 3:
+            item = 0
+            index += 3
+        try:
+            triangles[index]
+        except KeyError:
+            return valid_items
 
 def line_check(triangles, direction):
     total_items = len(list(triangles.keys()))
@@ -50,8 +59,7 @@ def line_check(triangles, direction):
             if valid:
                 valid_items += 1
     if direction == "col":
-        for i in range(3):
-            valid_items += col_check(triangles, i)
+        valid_items += col_check(triangles)
     return(valid_items, total_items)
 
 def get_combos(numbers):
