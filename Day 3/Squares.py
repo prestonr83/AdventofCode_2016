@@ -35,7 +35,6 @@ def col_check(triangles):
         numbers = []
         for i in range(3):
             numbers.append(triangles[index][item])
-            print(index)
             index += 1
         valid = valid_tri(numbers)
         if valid:
