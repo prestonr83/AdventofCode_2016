@@ -12,34 +12,28 @@ def load_input():
             lines.append(line.strip("\n"))
     return lines
 
-def parse_address(addr):
-    addr_list = re.findall(r'\[?[a-z]+\]?', addr)
-    return addr_list
-
-def chk_address(addr_list):
+def tls_address(addr_list):
+    hnet = False
+    tls = False
     for i in range(len(addr_list)):
-        if addr_list[i][0] == "[":
-            hnet = tls_chk(addr_list[i].strip("[]"))
-            if hnet:
-                return False
-        else:
-            status = tls_chk(addr_list[i])
-            if status:
-                return True
-    return False
-
-def tls_chk(addr_segment):
-    for i in range(len(addr_segment)):
-        ltr_set1 = list(addr_segment[i:i+2])
-        ltr_set2 = list(addr_segment[i+2:i+4])
+        if addr_list[i] == ']' or addr_list[i] =='[':
+            hnet = not hnet
+            continue
+        if ']' in addr_list[i:i+4]:
+            continue
+        ltr_set1 = list(addr_list[i:i+2])
+        ltr_set2 = list(addr_list[i+2:i+4])
         if len(ltr_set2) < 2:
-            break
+            if tls:
+                return True
+            return False
         if ltr_set1 == ltr_set2:
             continue
         ltr_set2.reverse()
         if ltr_set1 == ltr_set2:
-            return True
-    return False
+            if hnet:
+                return False
+            tls = True
 
 def main():
     tls = {
@@ -48,8 +42,7 @@ def main():
         }
     addr_list = load_input()
     for raw_addr in addr_list:
-        addr = parse_address(raw_addr)
-        if chk_address(addr):
+        if tls_address(raw_addr):
             tls['enabled'] += 1
         else:
             tls['disabled'] += 1
