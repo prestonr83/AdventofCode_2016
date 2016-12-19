@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 from collections import deque
 
 
@@ -12,11 +13,12 @@ def load_input():
         with open(INPUT, mode="r") as data:
             for line in data.readlines():
                 lines.append(line.strip("\n"))
+        if len(lines) == 1:
+            return lines[0]
         return lines
 
-def decomp_len(lines):
-  output = ''
-  for line in lines:
+def decomp(line):
+    output = ''
     temp = line
     while True:
         start = re.search(r'(^[a-zA-Z0-9]+)\(?', temp)
@@ -31,9 +33,26 @@ def decomp_len(lines):
         for i in range(repeat):
             output += temp[start_pos:end_pos]
         temp = temp[end_pos:]
-  return len(output)
+        sys.stdout.write("\rchars left to process {}".format(len(temp)))
+        sys.stdout.flush()
+    sys.stdout.write("\n")
+    sys.stdout.flush()
+    return output
 
 if __name__ == '__main__':
     data = load_input()
-    length = decomp_len(data)
-    print(length)
+    expanded = decomp(data)
+    length = len(expanded)
+    print("Version 1 length is {}".format(length))
+    while True:
+        compressed = re.search(r'\(([0-9]+)x([0-9]+)\)', expanded)
+        round = 0
+        if compressed: 
+            round += 1
+            sys.stdout.write("Round {} = {}".format(round, len(expanded)))
+            sys.stdout.flush()
+            expanded = decomp(expanded)
+        else:
+            break
+    v2len = len(expanded)
+    print("Version 2 length is {}".format(v2len))
