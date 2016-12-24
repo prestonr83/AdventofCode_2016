@@ -20,16 +20,15 @@ def load_input():
 def decomp(line):
     output = ''
     temp = line
+    total_len = len(re.sub(r'\([0-9]+x[0-9]+\)', '', line))
+    marker_dict = {}
     while True:
-        start = re.search(r'(^[a-zA-Z0-9]+)\(?', temp)
         reg = re.search(r'\(([0-9]+)x([0-9]+)\)', temp)
-        if start:
-            output += start.group(1)
         if not reg:
             break
-        repeat = int(reg.group(2))
-        start_pos = reg.start() + len(reg.group())
-        end_pos = int(reg.group(1)) + start_pos
+        
+
+
         for i in range(repeat):
             output += temp[start_pos:end_pos]
         temp = temp[end_pos:]
@@ -47,9 +46,9 @@ if __name__ == '__main__':
     while True:
         compressed = re.search(r'\(([0-9]+)x([0-9]+)\)', expanded)
         round = 0
-        if compressed: 
+        if compressed:
             round += 1
-            sys.stdout.write("Round {} = {}".format(round, len(expanded)))
+            sys.stdout.write("Round {} = {}\n".format(round, len(expanded)))
             sys.stdout.flush()
             expanded = decomp(expanded)
         else:
